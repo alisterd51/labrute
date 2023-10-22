@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  labrute-front:
+    container_name: labrute-front
+    image: anclarma/labrute-angular:0.0.1
+    build:
+      context: labrute-angular
+      target: production
+      args:
+        BACKEND_HOST: ${LABRUTE_BACKEND_HOST}
+    ports:
+      - "8080:8080/tcp"
+
+  labrute-back:
+    container_name: labrute-back
+    image: anclarma/labrute-nestjs:0.0.1
+    build:
+      context: labrute-nestjs
+      target: production
+    networks:
+      - labrute-network
+    depends_on:
+      labrute-db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: labrute-db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${LABRUTE_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${LABRUTE_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${LABRUTE_POSTGRES_DB}
+    ports:
+      - "3000:3000/tcp"
+
+  labrute-db:
+    container_name: labrute-db
+    image: postgres:16.0-alpine
+    volumes:
+      - labrute-data:/var/lib/postgresql/data:rw
+    networks:
+      - labrute-network
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${LABRUTE_POSTGRES_USER} -d ${LABRUTE_POSTGRES_DB}'"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    environment:
+      POSTGRES_USER: ${LABRUTE_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${LABRUTE_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${LABRUTE_POSTGRES_DB}
+
+volumes:
+  labrute-data:
+
+networks:
+  labrute-network:
+    external: false
