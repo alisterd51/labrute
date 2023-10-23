@@ -1,0 +1,6 @@
+[submodule "labrute-angular"]
+	path = labrute-angular
+	url = git@github.com:alisterd51/labrute-angular.git
+[submodule "labrute-nestjs"]
+	path = labrute-nestjs
+	url = git@github.com:alisterd51/labrute-nestjs.git
