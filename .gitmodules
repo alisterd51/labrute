@@ -1,6 +1,8 @@
 [submodule "labrute-angular"]
 	path = labrute-angular
 	url = ../labrute-angular.git
+	branch = master
 [submodule "labrute-nestjs"]
 	path = labrute-nestjs
 	url = ../labrute-nestjs.git
+	branch = master
